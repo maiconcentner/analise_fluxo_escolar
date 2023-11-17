@@ -8,20 +8,47 @@ A base de dados é fornecida pelo Departamento de Tecnologia de Sistemas e Incl 
 ### Tabela *escola*
 A tabela contém dados do fluxo escolar agregado a nível de ensino de cada escola. Para quantificar o fluxo, utiliza-se 3 variáveis para cada nível de ensino: a proporção de alunos aprovados, a proporção de alunos reprovados e a proporção de alunos que abandonaram o ano escolar.
 
-| Nome | Tipo de dado | Descrição |
-|------|--------------|-----------|
-| ano  | INT64        | Ano       |
-| sigla\_uf | STRING   | Sigla da Unidade da Federação |
-| ... (demais colunas) |
+| Nome                              | Tipo de dado | Descrição                                       |
+| --------------------------------- | ------------ | ----------------------------------------------- |
+| ano                               | INT64        | Ano                                             |
+| sigla\_uf                         | STRING       | Sigla da Unidade da Federação                   |
+| rede                              | STRING       | Rede de ensino                                  |
+| diretoria                         | STRING       | Diretoria de ensino                             |
+| id\_municipio                     | INT64        | ID Município - IBGE 7 Dígitos                  |
+| id\_escola                        | INT64        | ID Escola - INEP                                |
+| id\_escola\_sp                    | INT64        | ID Escola - específico para o estado de SP      |
+| codigo\_tipo\_escola              | INT64        | Código identificador do tipo de escola         |
+| prop\_aprovados\_anos\_iniciais\_ef | FLOAT64    | Prop. alunos aprov. nos anos iniciais do EF    |
+| prop\_reprovados\_anos\_iniciais\_ef | FLOAT64    | Prop. alunos reprov. nos anos iniciais do EF   |
+| prop\_abandono\_anos\_iniciais\_ef   | FLOAT64  | Prop. alunos aband. nos anos iniciais do EF    |
+| prop\_aprovados\_anos\_finais\_ef    | FLOAT64  | Prop. alunos aprov. nos anos finais do EF      |
+| prop\_reprovados\_anos\_finais\_ef   | FLOAT64  | Prop. alunos reprov. nos anos finais do EF     |
+| prop\_abandono\_anos\_finais\_ef     | FLOAT64  | Prop. alunos aband. nos anos finais do EF     |
+| prop\_aprovados\_em                  | FLOAT64  | Prop. alunos aprovados nos anos do EM         |
+| prop\_reprovados\_em                 | FLOAT64  | Prop. alunos reprovados nos anos do EM        |
+| prop\_abandono\_em                   | FLOAT64  | Prop. de alunos que abandonaram no EM        |
+
 
 ### Tabela *municipio*
 A tabela disponibiliza dados sobre o fluxo escolar a nível de município. O fluxo escolar consiste em um conjunto de variáveis que indica a taxa de aprovação, reprovação e abandono para cada nível do ensino escolar.
 
-| Nome | Tipo de dado | Descrição |
-|------|--------------|-----------|
-| ano  | INT64        | Ano       |
-| sigla\_uf | STRING   | Sigla da Unidade da Federação |
-| ... (demais colunas) |
+| Nome                              | Tipo de dado | Descrição                                       |
+| --------------------------------- | ------------ | ----------------------------------------------- |
+| ano                               | INT64        | Ano                                             |
+| sigla\_uf                         | STRING       | Sigla da Unidade da Federação                   |
+| rede                              | STRING       | Rede de ensino                                  |
+| diretoria                         | STRING       | Diretoria de ensino                             |
+| id\_municipio                     | INT64        | ID Município - IBGE 7 Dígitos                  |
+| prop\_aprovados\_anos\_iniciais\_ef | FLOAT64    | Prop. alunos aprov. nos anos iniciais do EF    |
+| prop\_reprovados\_anos\_iniciais\_ef | FLOAT64    | Prop. alunos reprov. nos anos iniciais do EF   |
+| prop\_abandono\_anos\_iniciais\_ef   | FLOAT64  | Prop. alunos aband. nos anos iniciais do EF    |
+| prop\_aprovados\_anos\_finais\_ef    | FLOAT64  | Prop. alunos aprov. nos anos finais do EF      |
+| prop\_reprovados\_anos\_finais\_ef   | FLOAT64  | Prop. alunos reprov. nos anos finais do EF     |
+| prop\_abandono\_anos\_finais\_ef     | FLOAT64  | Prop. alunos aband. nos anos finais do EF     |
+| prop\_aprovados\_em                  | FLOAT64  | Prop. alunos aprovados nos anos do EM         |
+| prop\_reprovados\_em                 | FLOAT64  | Prop. alunos reprovados nos anos do EM        |
+| prop\_abandono\_em                   | FLOAT64  | Prop. de alunos que abandonaram no EM        |
+
 
 ## Sugestão de Análises
 Com uma base de dados sobre o fluxo escolar por escola em São Paulo, há diversas análises e insights que podem ser extraídos. Aqui estão algumas sugestões:
