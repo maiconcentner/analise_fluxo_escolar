@@ -85,3 +85,4 @@ Observação: as análises específicas dependem da natureza exata dos dados dis
 **Referências:**
 - [Portal Governo Aberto SP](http://catalogo.governoaberto.sp.gov.br/dataset/fluxo-escolar-por-escola)
 - [Instituto Base dos Dados](https://basedosdados.org/dataset/6afcbdcb-5f30-477c-bd0f-c6a002e464df?table=f50c5690-2450-4975-9c6a-b42882a8e8e4)
+- [Base dados IBGE](https://www.ibge.gov.br/cidades-e-estados/sp/sao-paulo.html)
