@@ -140,9 +140,36 @@ app_ui = ui.page_fluid(
                 ),
                 class_="d-flex flex-column align-items-start"
             ),
+            
         ),
             output_widget("my_widget"),
             output_widget("my_widget2"),
+        ),
+        ),
+        
+        # Aba dos municipios
+        ui.nav(
+            "Análise dos munícipios",
+            ui.markdown("""________________________________________"""),
+            ui.layout_sidebar(
+                ui.panel_sidebar(           
+            ui.div(
+                ui.input_selectize(
+                    "y4", label="Município",
+                    choices=choices,
+                    multiple=True,
+                ),
+                class_="d-flex flex-column align-items-start"
+                
+            ),
+            ui.div(
+                ui.input_slider('y5','Bins', value=2000,min=0,max=5000),
+                ui.input_slider("y6", "Escala do eixo x", value=(-100, 500), min=-100, max=4000)
+
+            ),
+        ),
+            output_widget("my_widget3"),
+            output_widget("my_widget4"),
         ),
         )
         
@@ -285,11 +312,51 @@ def server(input, output, session):
 
         return fig2
     
-    def dados_municipios():
-        municipios_ibge = pd.read_csv("base_dados\cod_municipios.csv")
+    #? Municipios
+    
+    @output
+    @render_widget
+    def my_widget3():
+        cidades_selecionadas = input.y4()
+
+        municipios_ibge = pd.read_csv("D:\\Mestrado\\2Sem_23\\projeto_final_FCMII\\base_dados\\cod_municipios.csv",delimiter=';')
+
         df_novo = municipios_ibge[['municipio', 'den_demografica_hab/km', 'idhm']]
         
-        ...
+        # Filtrar para incluir apenas as cidades selecionadas, se necessário
+        if cidades_selecionadas:
+            df_novo = df_novo[df_novo['municipio'].isin(cidades_selecionadas)]
+
+        # Gráfico de Dispersão (Scatter Plot)
+        fig_a = px.scatter(df_novo, x='den_demografica_hab/km', y='idhm', labels={'den_demografica_hab/km': 'Densidade Demográfica (hab/km²)', 'idhm': 'IDHM'},
+                        hover_data=['municipio'],color='municipio')
+        
+        fig_a.update_layout(title='Densidade Demográfica vs IDHM')
+        
+        return fig_a
+    
+    @output
+    @render_widget
+    def my_widget4():
+        cidades_selecionadas = input.y4()
+        bins = input.y5()
+        inter = input.y6()
+
+        municipios_ibge = pd.read_csv("D:\\Mestrado\\2Sem_23\\projeto_final_FCMII\\base_dados\\cod_municipios.csv",delimiter=';')
+
+        df_novo = municipios_ibge[['municipio', 'den_demografica_hab/km', 'idhm']]
+        
+        # Filtrar para incluir apenas as cidades selecionadas, se necessário
+        if cidades_selecionadas:
+            df_novo = df_novo[df_novo['municipio'].isin(cidades_selecionadas)]
+
+        # Histograma - Densidade Demográfica
+        fig_b = px.histogram(df_novo, x='den_demografica_hab/km', nbins=bins, 
+                    labels={'den_demografica_hab/km': 'Densidade Demográfica (hab/km²)', 'count': 'Frequência'},
+                    range_x=inter)  # Definindo a faixa do eixo x
+        
+        fig_b.update_layout(title='Histograma - Densidade Demográfica')
+        return fig_b
 
 app = App(app_ui, server)
 
