@@ -133,6 +133,7 @@ app_ui = ui.page_fluid(
             ),
             
             ui.div(
+                
                 ui.input_selectize(
                     "y2", label="Município",
                     choices=choices,
@@ -160,15 +161,20 @@ app_ui = ui.page_fluid(
                     multiple=True,
                 ),
                 class_="d-flex flex-column align-items-start"
-                
             ),
+            ),
+                output_widget("my_widget3"),
+
+            ),
+            ui.layout_sidebar(
+                ui.panel_sidebar( 
+            
             ui.div(
                 ui.input_slider('y5','Bins', value=2000,min=0,max=5000),
                 ui.input_slider("y6", "Escala do eixo x", value=(-100, 500), min=-100, max=4000)
 
             ),
         ),
-            output_widget("my_widget3"),
             output_widget("my_widget4"),
         ),
         )
