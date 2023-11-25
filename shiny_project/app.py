@@ -5,6 +5,7 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objs as go
 import shinyswatch
+import pandas as pd
 
 # Fazendo a conecção na base de dados do PostgreSQL
 conexao = sql.conectar('D:\\Mestrado\\2Sem_23\\projeto_final_FCMII\\acesso.txt')
@@ -98,7 +99,9 @@ app_ui = ui.page_fluid(
     ui.markdown("""
         Repositório do projeto disponível no [github][0]
         
-        Maicon Centner Germano
+        Maicon Centner Germano, Pós-graduação em Biomentria - IBB Unesp Botucatu
+        
+        Ferramentas Computacionais de Modelagem II, Prof. Thomas N. Vilches
         
         [0]:https://github.com/maiconcentner/analise_fluxo_escolar
     """),
@@ -120,30 +123,39 @@ app_ui = ui.page_fluid(
         
         # Aba dos gráficos
         ui.nav(
-                "Vizualização gráfica",
-                ui.markdown("""________________________________________"""),
-                ui.div(   
-                ui.input_slider('y1', 'Ano', value=(2014,2019), min=2014, max=2019),
+            "Vizualização gráfica",
+            ui.markdown("""________________________________________"""),
+            ui.layout_sidebar(
+                ui.panel_sidebar(
+            ui.div(
+                ui.input_slider('y1', 'Ano', value=(2014, 2019), min=2014, max=2019),
+                class_="d-flex flex-column align-items-start"
+            ),
+            
+            ui.div(
                 ui.input_selectize(
-                    "y2", label="Munícipio",
+                    "y2", label="Município",
                     choices=choices,
                     multiple=True,
                 ),
-                class_="d-flex gap-3"
+                class_="d-flex flex-column align-items-start"
             ),
-            output_widget("my_widget")
+        ),
+            output_widget("my_widget"),
+            output_widget("my_widget2"),
+        ),
         )
         
     )
 )
 
 
-from matplotlib import pyplot as plt
 
 
 def server(input, output, session):
     @output
-    @render.table    
+    @render.table  
+    #? Tabela de dados
     def df_prop_aprovacao_munic():
         anos_selecionados = input.x1()
         cidades_selecionadas = input.x2()
@@ -164,6 +176,7 @@ def server(input, output, session):
     
     @output
     @render_widget
+    #? Gráfico de linhas
     def my_widget():
         anos_selecionados = input.y1()
         cidades_selecionadas = input.y2()
@@ -182,9 +195,11 @@ def server(input, output, session):
                 
         # prop_aprovados_anos_iniciais_ef
         df_1 = df_filtrado[['ano','prop_aprovados_anos_iniciais_ef']].groupby('ano').mean().reset_index()
+
         
         # prop_aprovados_anos_finais_ef
         df_2 = df_filtrado[['ano','prop_aprovados_anos_finais_ef']].groupby('ano').mean().reset_index()
+        
         
         # prop_aprovados_em
         df_3 = df_filtrado[['ano','prop_aprovados_em']].groupby('ano').mean().reset_index()
@@ -204,12 +219,77 @@ def server(input, output, session):
         fig.update_layout(
         height=600,
         xaxis_title='Ano',
-        title='Proporção de Aprovados nas Escolas do Estado',
+        title='Proporção média de Aprovados nas Escolas do Estado de São Paulo',
         xaxis=dict(title='Ano'),
         yaxis=dict(title='Proporção de Aprovados (%)'),
         template='ggplot2',  # Pode personalizar o modelo conforme necessário
         )
         return fig
+    
+    @output
+    @render_widget
+    #? Gráfico de barras
+    def my_widget2():
+        anos_selecionados = input.y1()
+        cidades_selecionadas = input.y2()
+        
+        # Filtrar com base no intervalo de anos selecionado
+        df_filtrado = df_media_aprov_cidade[
+            (df_media_aprov_cidade['ano'] >= anos_selecionados[0]) &
+            (df_media_aprov_cidade['ano'] <= anos_selecionados[1])
+        ]
+        
+        # Filtrar apenas se cidades selecionadas não estiverem vazias
+        if cidades_selecionadas:
+            df_filtrado = df_filtrado[
+                df_filtrado['municipio'].isin(cidades_selecionadas)
+            ]
+        
+        # prop_aprovados_anos_iniciais_ef
+        df_11 = df_filtrado[['municipio','prop_aprovados_anos_iniciais_ef']].groupby('municipio').mean().reset_index()
+        # Ordenar o DataFrame pelo valor desejado em ordem decrescente
+        df_1_sorted = df_11.sort_values(by='prop_aprovados_anos_iniciais_ef', ascending=False)
+        # Pegar as 10 primeiras cidades
+        df_11_s = df_1_sorted.head(10)
+        # prop_aprovados_anos_finais_ef
+        df_22 = df_filtrado[['municipio','prop_aprovados_anos_finais_ef']].groupby('municipio').mean().reset_index()
+        # Ordenar o DataFrame pelo valor desejado em ordem decrescente
+        df_2_sorted = df_22.sort_values(by='prop_aprovados_anos_finais_ef', ascending=False)
+        # Pegar as 10 primeiras cidades
+        df_22_s = df_2_sorted.head(10)
+        
+        # prop_aprovados_em
+        df_33 = df_filtrado[['municipio','prop_aprovados_em']].groupby('municipio').mean().reset_index()
+        df_3_sorted = df_33.sort_values(by='prop_aprovados_em', ascending=False)
+        # Pegar as 10 primeiras cidades
+        df_33_s = df_3_sorted.head(10)
+        
+        # Criar os traços individuais
+        trace1 = go.Bar(x=df_11_s['municipio'], y=df_11_s['prop_aprovados_anos_iniciais_ef'], name='Anos iniciais_ef',visible='legendonly')
+        trace2 = go.Bar(x=df_22_s['municipio'], y=df_22_s['prop_aprovados_anos_finais_ef'], name='Anos finais_ef',visible='legendonly')
+        trace3 = go.Bar(x=df_33_s['municipio'], y=df_33_s['prop_aprovados_em'], name='Ensino médio',visible=True)
+
+        # Criar a figura combinando os traços
+        fig2 = go.Figure(data=[trace1, trace2, trace3])
+        
+        # Atualizar o layout
+        fig2.update_layout(
+        height=600,
+        xaxis_title='Munícipio',
+        title='Ranking de aprovação por Munícipio - Top 10',
+        xaxis=dict(title='Município'),
+        yaxis=dict(title='Proporção de Aprovados (%)', range=[0, 102]),  # Definindo a escala entre 50 e 100
+        barmode='group',  # Agrupa as barras para cada município
+        template='ggplot2',
+    )
+
+        return fig2
+    
+    def dados_municipios():
+        municipios_ibge = pd.read_csv("base_dados\cod_municipios.csv")
+        df_novo = municipios_ibge[['municipio', 'den_demografica_hab/km', 'idhm']]
+        
+        ...
 
 app = App(app_ui, server)
 
