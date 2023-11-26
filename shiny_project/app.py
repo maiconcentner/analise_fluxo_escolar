@@ -6,6 +6,10 @@ import plotly.express as px
 import plotly.graph_objs as go
 import shinyswatch
 import pandas as pd
+import geopandas as gpd
+import requests
+from shapely.geometry import shape
+
 
 # Fazendo a conecção na base de dados do PostgreSQL
 conexao = sql.conectar('D:\\Mestrado\\2Sem_23\\projeto_final_FCMII\\acesso.txt')
@@ -20,7 +24,7 @@ query = sql.select(
     primary_table = b_escola, 
     conn = conexao
 )
-print(query)
+#print(query)
 
 # verificando a b_municipio
 query = sql.select(
@@ -29,7 +33,7 @@ query = sql.select(
     limit = 10, 
     conn = conexao
 )
-print(query)
+#print(query)
 
 # verificando a cod_ibge
 query = sql.select(
@@ -37,7 +41,7 @@ query = sql.select(
     primary_table = cod_ibge,
     conn = conexao
 )
-print(query)
+#print(query)
 
 # realizando um join da base b_escola com a cod_ibge
 query = sql.select(
@@ -48,7 +52,7 @@ query = sql.select(
     conn = conexao
 )
 
-print(query)
+#print(query)
 
 # Salvando consulta como um df
 df_escola = query
@@ -88,22 +92,20 @@ choices = df_media_aprov_cidade['municipio'].unique().tolist()
 
 app_ui = ui.page_fluid(
     #sandstone
-    #flatly
+    #flatly -> top
     #journal
-    #litera
+    #litera -> top
     #zephyr
-    shinyswatch.theme.sandstone(),
+    shinyswatch.theme.zephyr(),
     # style ----
     ui.markdown("""________________________________________"""),
-    ui.h2("Análise do fluxo escolar no estado de São Paulo"),
+    ui.h2("ANÁLISE DO FLUXO ESCOLAR NO ESTADO DE SÃO PAULO"),
     ui.markdown("""
-        Repositório do projeto disponível no [github][0]
+        <b> REPOSITÓRIO DO PROJETO DISPONÍVEL NO <a href="https://github.com/maiconcentner/analise_fluxo_escolar" target="_blank">GITHUB</a> </b>
         
-        Maicon Centner Germano, Pós-graduação em Biomentria - IBB Unesp Botucatu
+        Maicon Centner Germano, Pós-graduação em Biometria - IBB Unesp Botucatu
         
         Ferramentas Computacionais de Modelagem II, Prof. Thomas N. Vilches
-        
-        [0]:https://github.com/maiconcentner/analise_fluxo_escolar
     """),
     ui.markdown("""________________________________________"""),
     
@@ -152,6 +154,7 @@ app_ui = ui.page_fluid(
         ui.nav(
             "Análise dos munícipios",
             ui.markdown("""________________________________________"""),
+            ui.markdown("Fonte: IBGE 2020"),
             ui.layout_sidebar(
                 ui.panel_sidebar(           
             ui.div(
@@ -164,20 +167,22 @@ app_ui = ui.page_fluid(
             ),
             ),
                 output_widget("my_widget3"),
+                output_widget("my_widget5"),
 
             ),
             ui.layout_sidebar(
                 ui.panel_sidebar( 
             
             ui.div(
-                ui.input_slider('y5','Bins', value=2000,min=0,max=5000),
+                ui.input_slider('y5','Bins', value=1500,min=0,max=2000),
                 ui.input_slider("y6", "Escala do eixo x", value=(-100, 500), min=-100, max=4000)
 
             ),
         ),
+            
             output_widget("my_widget4"),
         ),
-        )
+        ),
         
     )
 )
@@ -252,7 +257,9 @@ def server(input, output, session):
         fig.update_layout(
         height=600,
         xaxis_title='Ano',
-        title='Proporção média de Aprovados nas Escolas do Estado de São Paulo',
+        title_text='<b>PROPORÇÃO MÉDIA DE APROVADOS</b>',
+        title_x=0.5,  # Define o título como centralizado
+        title_font=dict(size=25, family='Arial'),  # Ajusta o tamanho, a fonte e a cor do título
         xaxis=dict(title='Ano'),
         yaxis=dict(title='Proporção de Aprovados (%)'),
         template='ggplot2',  # Pode personalizar o modelo conforme necessário
@@ -308,13 +315,15 @@ def server(input, output, session):
         # Atualizar o layout
         fig2.update_layout(
         height=600,
-        xaxis_title='Munícipio',
-        title='Ranking de aprovação por Munícipio - Top 10',
+        xaxis_title='Município',
+        title_text='<b>RANKING DE APROVAÇÃO POR MUNICÍPIO - TOP 10</b>',
+        title_font=dict(size=25, family='Arial'),  # Ajusta o tamanho, a fonte e a cor do título
         xaxis=dict(title='Município'),
-        yaxis=dict(title='Proporção de Aprovados (%)', range=[0, 102]),  # Definindo a escala entre 50 e 100
-        barmode='group',  # Agrupa as barras para cada município
+        yaxis=dict(title='Proporção de Aprovados (%)', range=[0, 102]),
+        title_x=0.5,  # Alinha o título à esquerda
+        barmode='group',
         template='ggplot2',
-    )
+        )
 
         return fig2
     
@@ -337,7 +346,10 @@ def server(input, output, session):
         fig_a = px.scatter(df_novo, x='den_demografica_hab/km', y='idhm', labels={'den_demografica_hab/km': 'Densidade Demográfica (hab/km²)', 'idhm': 'IDHM'},
                         hover_data=['municipio'],color='municipio')
         
-        fig_a.update_layout(title='Densidade Demográfica vs IDHM')
+        fig_a.update_layout(height=600,title='<b>DENSIDADE DEMOGRÁFICA VS IDHM</b>',
+                            template='ggplot2',
+                            title_font=dict(size=25, family='Arial'),  # Ajusta o tamanho, a fonte e a cor do título
+)
         
         return fig_a
     
@@ -361,8 +373,42 @@ def server(input, output, session):
                     labels={'den_demografica_hab/km': 'Densidade Demográfica (hab/km²)', 'count': 'Frequência'},
                     range_x=inter)  # Definindo a faixa do eixo x
         
-        fig_b.update_layout(title='Histograma - Densidade Demográfica')
+        fig_b.update_layout(height=600,title='<b>HISTOGRAMA - DENSIDADE DEMOGRÁFICA</b>', 
+                            template='ggplot2',
+                            title_font=dict(size=25, family='Arial'),  # Ajusta o tamanho, a fonte e a cor do título
+                        )
         return fig_b
 
+    @output
+    @render_widget
+    
+    def my_widget5():
+        cidades_selecionadas = input.y4()
+        
+        municipios_ibge = pd.read_csv("D:\\Mestrado\\2Sem_23\\projeto_final_FCMII\\base_dados\\cod_municipios.csv",delimiter=';')
+        
+        # Filtrar para incluir apenas as cidades selecionadas, se necessário
+        if cidades_selecionadas:
+            municipios_ibge = municipios_ibge[municipios_ibge['municipio'].isin(cidades_selecionadas)]
+            
+        # Ordenar o DataFrame pela coluna 'receitas_realizadas_1000' em ordem decrescente
+        municipios_ibge_sorted = municipios_ibge.sort_values(by='receitas_realizadas_1000', ascending=False)
+
+        # Pegar os top 20 registros
+        top_20_municipios = municipios_ibge_sorted.head(20)
+
+        # Gráfico de Barras - Receitas Realizadas (x1000) por Município - Top 20
+        bar_fig = px.bar(top_20_municipios, x='municipio', y='receitas_realizadas_1000', labels={'receitas_realizadas_1000': 'Receitas Realizadas (x1000)'})
+        bar_fig.update_layout(height=600,title='<b>TOP 20 MUNICÍPIOS COM MAIORES RECEITAS REALIZADAS</b>',
+                            template='ggplot2',
+                            title_font=dict(size=25, family='Arial'),  # Ajusta o tamanho, a fonte e a cor do título
+
+                            )
+        # Atualiza a cor das barras para verde
+        bar_fig.update_traces(marker=dict(color='#00bf7d'))
+
+        return bar_fig
+        
+        
 app = App(app_ui, server)
 
