@@ -96,7 +96,7 @@ app_ui = ui.page_fluid(
     #journal
     #litera -> top
     #zephyr
-    shinyswatch.theme.zephyr(),
+    shinyswatch.theme.journal(),
     # style ----
     ui.markdown("""________________________________________"""),
     ui.h2("ANÁLISE DO FLUXO ESCOLAR NO ESTADO DE SÃO PAULO"),
@@ -112,7 +112,7 @@ app_ui = ui.page_fluid(
     # Aba da tabela
     ui.navset_tab(
         ui.nav(
-            "Tabela de dados",
+            ui.markdown("<b>Tabela de dados</b>"),
             ui.layout_sidebar(
                 ui.panel_sidebar(
                     ui.input_slider('x1', 'Ano', value=(2014,2019), min=2014, max=2019),
@@ -125,7 +125,7 @@ app_ui = ui.page_fluid(
         
         # Aba dos gráficos
         ui.nav(
-            "Vizualização gráfica",
+            ui.markdown("<b>Vizualização gráfica</b>"),
             ui.markdown("""________________________________________"""),
             ui.layout_sidebar(
                 ui.panel_sidebar(
@@ -152,7 +152,7 @@ app_ui = ui.page_fluid(
         
         # Aba dos municipios
         ui.nav(
-            "Análise dos munícipios",
+            ui.markdown("<b>Análise dos munícipios</b>"),
             ui.markdown("""________________________________________"""),
             ui.markdown("Fonte: IBGE 2020"),
             ui.layout_sidebar(
@@ -375,8 +375,9 @@ def server(input, output, session):
         
         fig_b.update_layout(height=600,title='<b>HISTOGRAMA - DENSIDADE DEMOGRÁFICA</b>', 
                             template='ggplot2',
-                            title_font=dict(size=25, family='Arial'),  # Ajusta o tamanho, a fonte e a cor do título
+                            title_font=dict(size=25, family='Arial'),
                         )
+        fig_b.update_traces(marker=dict(color='#f8766d'))
         return fig_b
 
     @output
