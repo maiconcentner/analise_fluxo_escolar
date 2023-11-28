@@ -11,6 +11,7 @@ def conectar(acesso):
 
     engine = create_engine(f'postgresql://{usuario}:{senha}@localhost:5432/aula_thomas')
 
+
     return engine
 
 """"
