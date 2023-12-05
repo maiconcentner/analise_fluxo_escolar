@@ -6,7 +6,7 @@ A base de dados analisada oferece informações abrangentes sobre o fluxo escola
 A base de dados é fornecida pelo Departamento de Tecnologia de Sistemas e Incl administrado pela Secretaria da Educação - Sede, disponível [neste link](http://catalogo.governoaberto.sp.gov.br/dataset/fluxo-escolar-por-escola). Estaremos utilizando os dados já tratados, fornecidos pelo Instituto Base dos Dados, você pode acessar [clicando aqui](https://basedosdados.org/dataset/6afcbdcb-5f30-477c-bd0f-c6a002e464df?table=f50c5690-2450-4975-9c6a-b42882a8e8e4).
 
 ### Tabela *escola*
-A tabela contém dados do fluxo escolar agregado a nível de ensino de cada escola. Para quantificar o fluxo, utiliza-se 3 variáveis para cada nível de ensino: a proporção de alunos aprovados, a proporção de alunos reprovados e a proporção de alunos que abandonaram o ano escolar.
+A tabela contém dados do fluxo escolar agregado a nível de ensino de cada escola. Para quantificar o fluxo, utiliza-se 3 variáveis para cada nível de ensino: a proporção de alunos aprovados, a proporção de alunos reprovados e a proporção de alunos que abandonaram o ano escolar:
 
 | Nome                              | Tipo de dado | Descrição                                       |
 | --------------------------------- | ------------ | ----------------------------------------------- |
