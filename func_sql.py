@@ -5,21 +5,20 @@ def conectar(acesso):
     with open(acesso, "r") as arquivo:
         texto = arquivo.read()
         texto = texto.split(',')
-        
+
     usuario = texto[0]
     senha =  texto[1]
 
     engine = create_engine(f'postgresql://{usuario}:{senha}@localhost:5432/aula_thomas')
-
 
     return engine
 
 """"
 def sql_select(tabela, colunas = '*', conn=None):
     consulta = f"SELECT {colunas} FROM {tabela};"
-    
+
     query = pd.read_sql_query(consulta, con=conn)
-    
+
     return query
 """
 
