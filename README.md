@@ -49,6 +49,20 @@ A tabela disponibiliza dados sobre o fluxo escolar a nível de município. O flu
 | prop\_reprovados\_em                 | FLOAT64  | Prop. alunos reprovados nos anos do EM        |
 | prop\_abandono\_em                   | FLOAT64  | Prop. de alunos que abandonaram no EM        |
 
+### Tabela *ibge_municipios*
+
+| Nome                              | Tipo de dado | Descrição                                       |
+| --------------------------------- | ------------ | ----------------------------------------------- |
+| cod_ibge                          | INT64        | Código IBGE do município                       |
+| municipio                         | STRING       | Nome do município                              |
+| area_territorial_km2              | FLOAT64      | Área territorial em quilômetros quadrados      |
+| pop_residente                     | INT64        | População residente                            |
+| den_demografica_hab/km            | FLOAT64      | Densidade demográfica em habitantes por km²    |
+| escolarizacao_6_a_14_anos_percent  | FLOAT64      | Taxa de escolarização de 6 a 14 anos em percentagem |
+| idhm                              | FLOAT64      | Índice de Desenvolvimento Humano Municipal     |
+| receitas_realizadas_1000          | FLOAT64      | Receitas realizadas em mil reais               |
+| pib_2020                          | FLOAT64      | Produto Interno Bruto (PIB) em 2020            |
+
 
 ## Sugestão de Análises
 Com uma base de dados sobre o fluxo escolar por escola em São Paulo, há diversas análises e insights que podem ser extraídos. Aqui estão algumas sugestões:
